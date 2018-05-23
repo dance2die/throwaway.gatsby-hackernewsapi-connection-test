@@ -1,0 +1,9 @@
+{
+  "private_key": "",
+  "client_email": "a@a.com",
+  "service_account": {
+    "private_key": "abc",
+    "email": "",
+    "project_id": ""
+  }
+}
