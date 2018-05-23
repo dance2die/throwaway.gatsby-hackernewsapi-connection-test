@@ -13,17 +13,35 @@ exports.sourceNodes = async ({ boundActionCreators }) => {
     `https://hacker-news.firebaseio.com/v0/topstories.json`
   )
 
-  console.log(`res`, res)
+  const getItems = async storyIds => {
+    const itemsPromises = res.data.map(
+      async (storyId, index) =>
+        await axios.get(
+          `https://hacker-news.firebaseio.com/v0/item/${storyId}.json`
+        )
+    )
+    return Promise.all(itemsPromises)
+  }
+
+  const items = (await getItems(res.data)).map(res => res.data)
+  const findItemById = storyId => {
+    const result = items.find(item => item.id === storyId)
+    console.log(`findItemById(${storyId}) => ${result}`)
+    return result
+  }
+
+  //   console.log(`items`, items)
 
   res.data.map((storyId, index) => {
     const storyIdNode = {
       id: `${index}`,
       parent: null,
       internal: {
-        type: `StoryIds`,
+        type: `TopStories`,
       },
       children: [],
       storyId: storyId,
+      item: findItemById(storyId),
     }
 
     // Get content digest of node. (Required field)
